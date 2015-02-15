@@ -10,3 +10,8 @@ Do this:
 gradle build
 java -jar build/libs/gs-rest-service-0.1.0.jar
 ~~~~~~~~~~~~~~~~~~
+
+Then visit this URL
+
+https://localhost:8443/greeting
+
