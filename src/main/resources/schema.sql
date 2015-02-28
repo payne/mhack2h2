@@ -1,4 +1,5 @@
 create table users (
+  id int,
   username varchar(256),
   password varchar(256),
   enabled boolean
