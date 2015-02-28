@@ -16,7 +16,15 @@
 
 package sample.jetty.web;
 
+import java.util.List;
+import java.util.Map;
+
+import javax.sql.DataSource;
+
+import org.mattpayne.demo.dao.ResultSetExtractorListMap;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.ResultSetExtractor;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -30,10 +38,25 @@ public class SampleController {
 	@Autowired
 	private HelloWorldService helloWorldService;
 
+	@Autowired
+	private DataSource dataSource;
+
 	@RequestMapping("/h2")
 	@ResponseBody
-	public String helloWorld(@RequestParam(value="name", defaultValue="World") String newName) {
-		return this.helloWorldService.getHelloMessage()+" newName="+newName;
+	public String helloWorld(
+			@RequestParam(value = "name", defaultValue = "World") String newName) {
+		String retval = this.helloWorldService.getHelloMessage() + " newName=" + newName;
+		
+		System.out.println("dataSource="+dataSource);
+		NamedParameterJdbcTemplate jdbc=new NamedParameterJdbcTemplate(dataSource);
+		String sql="select * from users";
+		ResultSetExtractorListMap rse=new ResultSetExtractorListMap();
+		List<Map<String, Object>> lstMap = jdbc.query(sql, rse);
+		for (Map<String, Object> map : lstMap) {
+			System.out.println("map="+map);
+		}
+		
+		return retval;
 	}
 
 }
