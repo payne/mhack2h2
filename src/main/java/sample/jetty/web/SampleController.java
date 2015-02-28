@@ -19,6 +19,7 @@ package sample.jetty.web;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import sample.jetty.service.HelloWorldService;
@@ -29,10 +30,10 @@ public class SampleController {
 	@Autowired
 	private HelloWorldService helloWorldService;
 
-	@RequestMapping("/")
+	@RequestMapping("/h2")
 	@ResponseBody
-	public String helloWorld() {
-		return this.helloWorldService.getHelloMessage();
+	public String helloWorld(@RequestParam(value="name", defaultValue="World") String newName) {
+		return this.helloWorldService.getHelloMessage()+" newName="+newName;
 	}
 
 }
