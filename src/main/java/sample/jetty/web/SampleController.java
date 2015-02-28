@@ -16,6 +16,9 @@
 
 package sample.jetty.web;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
+import java.io.Writer;
 import java.util.List;
 import java.util.Map;
 
@@ -45,17 +48,29 @@ public class SampleController {
 	@ResponseBody
 	public String helloWorld(
 			@RequestParam(value = "name", defaultValue = "World") String newName) {
-		String retval = this.helloWorldService.getHelloMessage() + " newName=" + newName;
-		
-		System.out.println("dataSource="+dataSource);
-		NamedParameterJdbcTemplate jdbc=new NamedParameterJdbcTemplate(dataSource);
-		String sql="select * from users";
-		ResultSetExtractorListMap rse=new ResultSetExtractorListMap();
+		String retval = this.helloWorldService.getHelloMessage() + " newName="
+				+ newName;
+
+		System.out.println("dataSource=" + dataSource);
+		NamedParameterJdbcTemplate jdbc = new NamedParameterJdbcTemplate(
+				dataSource);
+		String sql = "select * from users";
+		ResultSetExtractorListMap rse = new ResultSetExtractorListMap();
 		List<Map<String, Object>> lstMap = jdbc.query(sql, rse);
 		for (Map<String, Object> map : lstMap) {
-			System.out.println("map="+map);
+			System.out.println("map=" + map);
 		}
-		
+		lstMap = null;
+		try {
+			int size = lstMap.size();
+		} catch (Exception bland) {
+			bland.printStackTrace();
+
+			Writer result = new StringWriter();
+			PrintWriter printWriter = new PrintWriter(result);
+			bland.printStackTrace(printWriter);
+			retval = result.toString();
+		}
 		return retval;
 	}
 
