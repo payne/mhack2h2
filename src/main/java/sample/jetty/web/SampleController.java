@@ -43,18 +43,34 @@ public class SampleController {
 
 	@Autowired
 	private DataSource dataSource;
-
 	
+	//TODO: Add a user and be vulnerable to Bobby Tables: http://xkcd.com/327/
+
 	@RequestMapping("/idLookup")
 	@ResponseBody
-	public String getUserName(@RequestParam(value = "id", defaultValue = "2") int id) {
-		
-		return "Bullshit "+id;
-		
+	public String getUserName(
+			@RequestParam(value = "id", defaultValue = "2") String id) {
+		String retval;
+
+		try {
+			NamedParameterJdbcTemplate jdbc = new NamedParameterJdbcTemplate(
+					dataSource);
+			String sql = "select * from users where id = " + id;
+			ResultSetExtractorListMap rse = new ResultSetExtractorListMap();
+			List<Map<String, Object>> lstMap = jdbc.query(sql, rse);
+			String username = (String) lstMap.get(0).get("USERNAME");
+			retval = String.format("Username '%s' has id=%s", username, id);
+		} catch (Exception bland) {
+			bland.printStackTrace();
+
+			Writer result = new StringWriter();
+			PrintWriter printWriter = new PrintWriter(result);
+			bland.printStackTrace(printWriter);
+			retval = result.toString();
+		}
+		return retval;
 	}
-			
-			
-	
+
 	@RequestMapping("/h2")
 	@ResponseBody
 	public String helloWorld(

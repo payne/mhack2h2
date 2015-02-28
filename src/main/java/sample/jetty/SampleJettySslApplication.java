@@ -16,14 +16,38 @@
 
 package sample.jetty;
 
+import java.awt.Desktop;
+import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
+
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.ConfigurableApplicationContext;
+
+import com.centerkey.utils.BareBonesBrowserLaunch;
 
 @SpringBootApplication
 public class SampleJettySslApplication {
 
 	public static void main(String[] args) throws Exception {
-		SpringApplication.run(SampleJettySslApplication.class, args);
+		ConfigurableApplicationContext ctx = SpringApplication.run(SampleJettySslApplication.class, args);
+		System.out.println("Done with run.  ctx="+ctx);
+		launchBrowser();
 	}
 
+	
+	private static void launchBrowser() throws IOException, URISyntaxException {
+		String urlStr = "https://localhost:8443";
+		if(Desktop.isDesktopSupported())
+		{
+		  Desktop.getDesktop().browse(new URI(urlStr));
+		  System.out.println("Just tried to launch browser to "+urlStr);
+		} else { 
+			System.out.println("Desktop not supported.  boo!");
+			BareBonesBrowserLaunch.openURL(urlStr);
+			System.out.println("Just tried: BareBonesBrowserLaunch.openURL");
+		}
+	}
+	
 }
