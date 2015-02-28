@@ -44,6 +44,17 @@ public class SampleController {
 	@Autowired
 	private DataSource dataSource;
 
+	
+	@RequestMapping("/idLookup")
+	@ResponseBody
+	public String getUserName(@RequestParam(value = "id", defaultValue = "2") int id) {
+		
+		return "Bullshit "+id;
+		
+	}
+			
+			
+	
 	@RequestMapping("/h2")
 	@ResponseBody
 	public String helloWorld(
