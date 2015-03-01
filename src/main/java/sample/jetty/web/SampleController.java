@@ -51,11 +51,11 @@ public class SampleController {
 	public String getUserName(
 			@RequestParam(value = "id", defaultValue = "2") String id) {
 		String retval;
-
+		String sql = "select * from users where id = " + id;
 		try {
 			NamedParameterJdbcTemplate jdbc = new NamedParameterJdbcTemplate(
 					dataSource);
-			String sql = "select * from users where id = " + id;
+			
 			ResultSetExtractorListMap rse = new ResultSetExtractorListMap();
 			List<Map<String, Object>> lstMap = jdbc.query(sql, rse);
 			String username = (String) lstMap.get(0).get("USERNAME");
@@ -65,6 +65,7 @@ public class SampleController {
 
 			Writer result = new StringWriter();
 			PrintWriter printWriter = new PrintWriter(result);
+			printWriter.println("Problem running: " + sql +"\n\n");
 			bland.printStackTrace(printWriter);
 			retval = result.toString();
 		}
